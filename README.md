@@ -138,7 +138,7 @@ test 评分被隔离在最后一个单元格，只加载已经由 dev 选定的 
 
 ## Wu 2018 普通话→粤语 Dependency-to-Dependency 复现/适配
 
-[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/ss-sebastian/cantonese-stanza/blob/main/notebooks/wu2018_mandarin_cantonese_replication.ipynb)
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/ss-sebastian/zh-yue-d2d/blob/main/notebooks/wu2018_mandarin_cantonese_replication.ipynb)
 
 完整、自包含的 Colab notebook 位于 [`notebooks/wu2018_mandarin_cantonese_replication.ipynb`](notebooks/wu2018_mandarin_cantonese_replication.ipynb)。它自动下载并校验 UD r2.18 Chinese-HK/Cantonese-HK，仅按显式 `parallel_id` 恢复 1,004 个真实平行配对，实现 CES/HES、多流 GRU 编码器、Bahdanau attention、交互式 word/action GRU、DEV-only checkpoint 选择、四项 source-syntax 消融以及两种严格区分的评估模式。
 
