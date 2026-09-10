@@ -1,0 +1,167 @@
+{
+  "scope": {
+    "primary": "Cantonese custom train (803 sentences) and official parallel_id-matched Chinese-HK translations",
+    "appendix": "all 1004 parallel pairs; descriptive only, not for model/configuration selection",
+    "no_model_loaded_or_modified": true,
+    "no_dev_test_used_in_primary_analysis": true
+  },
+  "sources": {
+    "yue": {
+      "path": "/Users/seb/Documents/ChatGPT/cantonese stanza/data/raw/ud_cantonese_hk-r2.18/yue_hk-ud-test.conllu",
+      "sha256": "cbd843a195d0db4cdafbf6fcafb7b7b559afea750411006f4728311e70cc4e2a",
+      "tag": "r2.18"
+    },
+    "zh": {
+      "path": "/Users/seb/Documents/ChatGPT/cantonese stanza/data/raw/ud_chinese_hk-r2.18/zh_hk-ud-test.conllu",
+      "sha256": "a71ff348dd1e45c2cd525ed537a78d6c4b6c5edc15a19641bedc0a8465de820e",
+      "tag": "r2.18"
+    },
+    "split_manifest": {
+      "path": "/Users/seb/Documents/ChatGPT/cantonese stanza/data/processed/yue_hk/split_manifest.json",
+      "sha256": "8012d471987e2913a3394ef9ac8cb0e62d0f456b9f15fe32fb2f0df9d8c65d06"
+    },
+    "pairing_evidence": "exact equality of unique official # parallel_id fields; no row-number assumption"
+  },
+  "primary_train_only": {
+    "sentence_pairs": 803,
+    "tokens": {
+      "yue": 11001,
+      "zh": 7854
+    },
+    "mean_tokens_per_sentence": {
+      "yue": 13.699875466998755,
+      "zh": 9.780821917808218
+    },
+    "mean_nonroot_arc_distance": {
+      "yue": 3.400470680525593,
+      "zh": 2.8330733229329175
+    },
+    "long_arc_6plus_percent": {
+      "yue": 14.2168893736933,
+      "zh": 10.644257703081232
+    },
+    "head_left_percent_nonroot": {
+      "yue": 55.57952539713669,
+      "zh": 46.98624308608708
+    },
+    "strict_labels_only_in_yue": [
+      "advcl:coverb",
+      "advmod:df",
+      "clf:det",
+      "compound:quant",
+      "nsubj:periph"
+    ],
+    "strict_labels_only_in_zh": [
+      "aux:pass"
+    ],
+    "divergences": {
+      "deprel_strict": {
+        "jensen_shannon_bits": 0.03815138717345195,
+        "total_variation": 0.14391225910499558
+      },
+      "deprel_conll18_base": {
+        "jensen_shannon_bits": 0.028697849616413022,
+        "total_variation": 0.13357574479825396
+      },
+      "direction": {
+        "jensen_shannon_bits": 0.0068061357697639935,
+        "total_variation": 0.0934026137911346
+      },
+      "distance_bucket": {
+        "jensen_shannon_bits": 0.0038731027615398223,
+        "total_variation": 0.04815445279681151
+      },
+      "dependent_upos": {
+        "jensen_shannon_bits": 0.013079139091971252,
+        "total_variation": 0.08669029254858351
+      },
+      "head_upos": {
+        "jensen_shannon_bits": 0.009613637883689305,
+        "total_variation": 0.0444803649699461
+      },
+      "attachment_signature": {
+        "jensen_shannon_bits": 0.097685744356679,
+        "total_variation": 0.23160794674614274
+      }
+    },
+    "parallel_sentence_correlations": {
+      "token_count": 0.8866874315154458,
+      "mean_arc_distance": 0.7695120593475113,
+      "long_arc_percent": 0.6183058643240528
+    }
+  },
+  "descriptive_full_corpus_appendix": {
+    "sentence_pairs": 1004,
+    "tokens": {
+      "yue": 13918,
+      "zh": 9874
+    },
+    "mean_tokens_per_sentence": {
+      "yue": 13.862549800796813,
+      "zh": 9.834661354581673
+    },
+    "mean_nonroot_arc_distance": {
+      "yue": 3.4341799597336222,
+      "zh": 2.8182638105975197
+    },
+    "long_arc_6plus_percent": {
+      "yue": 14.54231929874982,
+      "zh": 10.512456957666599
+    },
+    "head_left_percent_nonroot": {
+      "yue": 55.05652779928759,
+      "zh": 46.52762119503946
+    },
+    "strict_labels_only_in_yue": [
+      "advcl:coverb",
+      "advmod:df",
+      "clf:det",
+      "compound:quant",
+      "nsubj:periph"
+    ],
+    "strict_labels_only_in_zh": [
+      "aux:pass"
+    ],
+    "divergences": {
+      "deprel_strict": {
+        "jensen_shannon_bits": 0.03857666844864228,
+        "total_variation": 0.14343644127822605
+      },
+      "deprel_conll18_base": {
+        "jensen_shannon_bits": 0.028914882479333364,
+        "total_variation": 0.13269096056496654
+      },
+      "direction": {
+        "jensen_shannon_bits": 0.006789502220356632,
+        "total_variation": 0.09288288360923436
+      },
+      "distance_bucket": {
+        "jensen_shannon_bits": 0.004451165092727374,
+        "total_variation": 0.05219512080115762
+      },
+      "dependent_upos": {
+        "jensen_shannon_bits": 0.013429018240400215,
+        "total_variation": 0.08623278979751856
+      },
+      "head_upos": {
+        "jensen_shannon_bits": 0.010194023158595054,
+        "total_variation": 0.04947577295448735
+      },
+      "attachment_signature": {
+        "jensen_shannon_bits": 0.09618618756364686,
+        "total_variation": 0.2294016404367105
+      }
+    },
+    "parallel_sentence_correlations": {
+      "token_count": 0.8869183497486213,
+      "mean_arc_distance": 0.7697191100650019,
+      "long_arc_percent": 0.6193174601914003
+    }
+  },
+  "limitations": [
+    "Chinese-HK is parallel reference data, not evidence of the ELECTRA parser checkpoint's actual training distribution.",
+    "Translations have different tokenization and lexical realization, so arcs are not aligned token-to-token.",
+    "Marginal label similarity cannot establish equality of conditional HEAD decisions or internal representations.",
+    "The full-corpus appendix includes custom dev/test and must not guide hyperparameter or architecture selection."
+  ]
+}

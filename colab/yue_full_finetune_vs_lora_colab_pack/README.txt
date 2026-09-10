@@ -1,0 +1,1 @@
+Upload yue_full_finetune_vs_lora.ipynb to Google Colab, choose an A100 GPU if available, and Run all. When prompted, upload the exact yue_dev_diagnostics.zip from the prior run. The notebook trains only on train, selects only on dev, and never evaluates test.

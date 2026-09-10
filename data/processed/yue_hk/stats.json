@@ -1,0 +1,1041 @@
+{
+  "data_checks": {
+    "duplicate_sent_ids": {},
+    "empty_node_row_count": 0,
+    "missing_sent_id_source_keys": [],
+    "multiword_token_row_count": 0,
+    "problem_count": 0,
+    "problems": [],
+    "root_count_histogram": {
+      "1": 1004
+    }
+  },
+  "dataset": {
+    "difference_from_official_readme": {
+      "sentence_count": 0,
+      "word_node_count": 0
+    },
+    "official_readme_reference_counts": {
+      "sentence_count": 1004,
+      "word_count": 13918
+    },
+    "sentence_count": 1004,
+    "word_node_count": 13918
+  },
+  "deprels_present_outside_train_only": {
+    "dev": [],
+    "test": []
+  },
+  "duplicate_groups": {
+    "annotation_inconsistent_group_count": 2,
+    "duplicate_group_count": 19,
+    "groups": [
+      {
+        "annotation_differences_against_first": [],
+        "annotation_inconsistent": false,
+        "annotation_row_sha256": {
+          "yue_hk:r2.18:0046:6768e4acb9c754cc": "eb118c674c997b7b74ceba6f0eff9ed2fd79df5050ff0ed2ffedaa6a789e61c0",
+          "yue_hk:r2.18:0048:3ad08b359bd77049": "eb118c674c997b7b74ceba6f0eff9ed2fd79df5050ff0ed2ffedaa6a789e61c0"
+        },
+        "group_id": "grp-66aa1183c4230478",
+        "match_modes": {
+          "exact_form_sequence_collision": true,
+          "joined_form_string_collision": true
+        },
+        "sent_ids": [
+          "46",
+          "48"
+        ],
+        "size": 2,
+        "source_keys": [
+          "yue_hk:r2.18:0046:6768e4acb9c754cc",
+          "yue_hk:r2.18:0048:3ad08b359bd77049"
+        ],
+        "texts": [
+          "六十六個四。",
+          "六十六個四。"
+        ],
+        "tokenization_differs": false
+      },
+      {
+        "annotation_differences_against_first": [],
+        "annotation_inconsistent": false,
+        "annotation_row_sha256": {
+          "yue_hk:r2.18:0094:9334cb0e809abb52": "db8f11908cb022465fc7de48e4ee41ce7bb132a9d74bd9ba729a5b4b53c52086",
+          "yue_hk:r2.18:0115:28e943e240dcb79c": "db8f11908cb022465fc7de48e4ee41ce7bb132a9d74bd9ba729a5b4b53c52086",
+          "yue_hk:r2.18:0124:80f9b9833e276275": "db8f11908cb022465fc7de48e4ee41ce7bb132a9d74bd9ba729a5b4b53c52086",
+          "yue_hk:r2.18:0125:f32c8ae7dadf6a0f": "db8f11908cb022465fc7de48e4ee41ce7bb132a9d74bd9ba729a5b4b53c52086"
+        },
+        "group_id": "grp-a8bb276a7b25e066",
+        "match_modes": {
+          "exact_form_sequence_collision": true,
+          "joined_form_string_collision": true
+        },
+        "sent_ids": [
+          "94",
+          "115",
+          "124",
+          "125"
+        ],
+        "size": 4,
+        "source_keys": [
+          "yue_hk:r2.18:0094:9334cb0e809abb52",
+          "yue_hk:r2.18:0115:28e943e240dcb79c",
+          "yue_hk:r2.18:0124:80f9b9833e276275",
+          "yue_hk:r2.18:0125:f32c8ae7dadf6a0f"
+        ],
+        "texts": [
+          "走啦！",
+          "走啦！",
+          "走啦！",
+          "走啦！"
+        ],
+        "tokenization_differs": false
+      },
+      {
+        "annotation_differences_against_first": [],
+        "annotation_inconsistent": false,
+        "annotation_row_sha256": {
+          "yue_hk:r2.18:0102:301c90d182465287": "bde039d1b337ce6e580d5a0ffdbed72b264b4d8ab1d67d99b3475ed4aaa15615",
+          "yue_hk:r2.18:0183:e3177b9bce95c989": "bde039d1b337ce6e580d5a0ffdbed72b264b4d8ab1d67d99b3475ed4aaa15615",
+          "yue_hk:r2.18:0267:6dc160cca0bdb4c6": "bde039d1b337ce6e580d5a0ffdbed72b264b4d8ab1d67d99b3475ed4aaa15615",
+          "yue_hk:r2.18:0269:34e082c83db75781": "bde039d1b337ce6e580d5a0ffdbed72b264b4d8ab1d67d99b3475ed4aaa15615"
+        },
+        "group_id": "grp-d294081c813de129",
+        "match_modes": {
+          "exact_form_sequence_collision": true,
+          "joined_form_string_collision": true
+        },
+        "sent_ids": [
+          "102",
+          "183",
+          "267",
+          "269"
+        ],
+        "size": 4,
+        "source_keys": [
+          "yue_hk:r2.18:0102:301c90d182465287",
+          "yue_hk:r2.18:0183:e3177b9bce95c989",
+          "yue_hk:r2.18:0267:6dc160cca0bdb4c6",
+          "yue_hk:r2.18:0269:34e082c83db75781"
+        ],
+        "texts": [
+          "哦。",
+          "哦。",
+          "哦。",
+          "哦。"
+        ],
+        "tokenization_differs": false
+      },
+      {
+        "annotation_differences_against_first": [],
+        "annotation_inconsistent": false,
+        "annotation_row_sha256": {
+          "yue_hk:r2.18:0126:60be991e58d9b5a6": "073d0d41c80d95b7a9491e8b7c2126571d94fa3428cbd2019460482a54be520f",
+          "yue_hk:r2.18:0140:fa36d2be188d9d5c": "073d0d41c80d95b7a9491e8b7c2126571d94fa3428cbd2019460482a54be520f"
+        },
+        "group_id": "grp-058c0b03c6db429e",
+        "match_modes": {
+          "exact_form_sequence_collision": true,
+          "joined_form_string_collision": true
+        },
+        "sent_ids": [
+          "126",
+          "140"
+        ],
+        "size": 2,
+        "source_keys": [
+          "yue_hk:r2.18:0126:60be991e58d9b5a6",
+          "yue_hk:r2.18:0140:fa36d2be188d9d5c"
+        ],
+        "texts": [
+          "快啲！",
+          "快啲！"
+        ],
+        "tokenization_differs": false
+      },
+      {
+        "annotation_differences_against_first": [],
+        "annotation_inconsistent": false,
+        "annotation_row_sha256": {
+          "yue_hk:r2.18:0144:49f97ba6a2225add": "de0b976aa96964a20a16b5ae426878ca0404bb1355d1afdf9a6752dd12fdc708",
+          "yue_hk:r2.18:0146:12e15ca62d837f63": "de0b976aa96964a20a16b5ae426878ca0404bb1355d1afdf9a6752dd12fdc708"
+        },
+        "group_id": "grp-acf9e14e1d62f278",
+        "match_modes": {
+          "exact_form_sequence_collision": true,
+          "joined_form_string_collision": true
+        },
+        "sent_ids": [
+          "144",
+          "146"
+        ],
+        "size": 2,
+        "source_keys": [
+          "yue_hk:r2.18:0144:49f97ba6a2225add",
+          "yue_hk:r2.18:0146:12e15ca62d837f63"
+        ],
+        "texts": [
+          "豪仔！",
+          "豪仔！"
+        ],
+        "tokenization_differs": false
+      },
+      {
+        "annotation_differences_against_first": [],
+        "annotation_inconsistent": false,
+        "annotation_row_sha256": {
+          "yue_hk:r2.18:0241:ef67d4b8971301eb": "ec53cdbcf53f97f5c4343251c2894c9680c5e57bd1de02beb8f5c334aaf914e4",
+          "yue_hk:r2.18:0245:ed27aaf9a57cf925": "ec53cdbcf53f97f5c4343251c2894c9680c5e57bd1de02beb8f5c334aaf914e4",
+          "yue_hk:r2.18:0250:6203ca33508c70cd": "ec53cdbcf53f97f5c4343251c2894c9680c5e57bd1de02beb8f5c334aaf914e4",
+          "yue_hk:r2.18:0294:9eb0db340d37c890": "ec53cdbcf53f97f5c4343251c2894c9680c5e57bd1de02beb8f5c334aaf914e4"
+        },
+        "group_id": "grp-2fe84972569ba3b7",
+        "match_modes": {
+          "exact_form_sequence_collision": true,
+          "joined_form_string_collision": true
+        },
+        "sent_ids": [
+          "241",
+          "245",
+          "250",
+          "294"
+        ],
+        "size": 4,
+        "source_keys": [
+          "yue_hk:r2.18:0241:ef67d4b8971301eb",
+          "yue_hk:r2.18:0245:ed27aaf9a57cf925",
+          "yue_hk:r2.18:0250:6203ca33508c70cd",
+          "yue_hk:r2.18:0294:9eb0db340d37c890"
+        ],
+        "texts": [
+          "唔得呀！",
+          "唔得呀！",
+          "唔得呀！",
+          "唔得呀！"
+        ],
+        "tokenization_differs": false
+      },
+      {
+        "annotation_differences_against_first": [],
+        "annotation_inconsistent": false,
+        "annotation_row_sha256": {
+          "yue_hk:r2.18:0300:8f62e10ab5eaff0b": "40f4d150184609a9e4b272d452482d91b7d3adc921bb88172f9ae68bb6c8ef45",
+          "yue_hk:r2.18:0367:80f2a19878b0ecb8": "40f4d150184609a9e4b272d452482d91b7d3adc921bb88172f9ae68bb6c8ef45"
+        },
+        "group_id": "grp-6ae86a2b1afe39c7",
+        "match_modes": {
+          "exact_form_sequence_collision": true,
+          "joined_form_string_collision": true
+        },
+        "sent_ids": [
+          "300",
+          "367"
+        ],
+        "size": 2,
+        "source_keys": [
+          "yue_hk:r2.18:0300:8f62e10ab5eaff0b",
+          "yue_hk:r2.18:0367:80f2a19878b0ecb8"
+        ],
+        "texts": [
+          "喂！",
+          "喂！"
+        ],
+        "tokenization_differs": false
+      },
+      {
+        "annotation_differences_against_first": [
+          {
+            "cells": [
+              {
+                "column": "HEAD",
+                "form_other": "，",
+                "form_reference": "，",
+                "other": "4",
+                "reference": "1",
+                "token_id_other": "3",
+                "token_id_reference": "3"
+              }
+            ],
+            "other_source_key": "yue_hk:r2.18:0321:2c1dc38f96e5739a",
+            "reference_source_key": "yue_hk:r2.18:0319:c80f7fcfdb23f2d5",
+            "row_count_other": 6,
+            "row_count_reference": 6
+          }
+        ],
+        "annotation_inconsistent": true,
+        "annotation_row_sha256": {
+          "yue_hk:r2.18:0319:c80f7fcfdb23f2d5": "d1e66d3b832d3e18ccde3be9a017e437c90c64f81eab0a4e004c34de976c1847",
+          "yue_hk:r2.18:0321:2c1dc38f96e5739a": "01be615911f86dc8773dea05572386a378170c533e1c9b768a6623de67995d6b"
+        },
+        "group_id": "grp-c17854bdd7a90b83",
+        "match_modes": {
+          "exact_form_sequence_collision": true,
+          "joined_form_string_collision": true
+        },
+        "sent_ids": [
+          "319",
+          "321"
+        ],
+        "size": 2,
+        "source_keys": [
+          "yue_hk:r2.18:0319:c80f7fcfdb23f2d5",
+          "yue_hk:r2.18:0321:2c1dc38f96e5739a"
+        ],
+        "texts": [
+          "等陣先，等陣先！",
+          "等陣先，等陣先！"
+        ],
+        "tokenization_differs": false
+      },
+      {
+        "annotation_differences_against_first": [],
+        "annotation_inconsistent": false,
+        "annotation_row_sha256": {
+          "yue_hk:r2.18:0323:72d0b418c9569240": "84f1d7023b25bdbd8d3aaa38422fc62e4427375541eaa1bfa61c5a1000724ca6",
+          "yue_hk:r2.18:0325:62b0fbfc2eb0c97b": "84f1d7023b25bdbd8d3aaa38422fc62e4427375541eaa1bfa61c5a1000724ca6"
+        },
+        "group_id": "grp-4d3644eae595eb06",
+        "match_modes": {
+          "exact_form_sequence_collision": true,
+          "joined_form_string_collision": true
+        },
+        "sent_ids": [
+          "323",
+          "325"
+        ],
+        "size": 2,
+        "source_keys": [
+          "yue_hk:r2.18:0323:72d0b418c9569240",
+          "yue_hk:r2.18:0325:62b0fbfc2eb0c97b"
+        ],
+        "texts": [
+          "等陣呀！",
+          "等陣呀！"
+        ],
+        "tokenization_differs": false
+      },
+      {
+        "annotation_differences_against_first": [],
+        "annotation_inconsistent": false,
+        "annotation_row_sha256": {
+          "yue_hk:r2.18:0342:a3548860769855f1": "a5abbf9c4bfa86bb4738c1142c46ae630ae2ddcd723d6f3f2342f9c147db74b5",
+          "yue_hk:r2.18:0358:814c1d4ae11b3f0f": "a5abbf9c4bfa86bb4738c1142c46ae630ae2ddcd723d6f3f2342f9c147db74b5"
+        },
+        "group_id": "grp-e73cd1411d73f575",
+        "match_modes": {
+          "exact_form_sequence_collision": true,
+          "joined_form_string_collision": true
+        },
+        "sent_ids": [
+          "342",
+          "358"
+        ],
+        "size": 2,
+        "source_keys": [
+          "yue_hk:r2.18:0342:a3548860769855f1",
+          "yue_hk:r2.18:0358:814c1d4ae11b3f0f"
+        ],
+        "texts": [
+          "你搞返掂佢呀。",
+          "你搞返掂佢呀。"
+        ],
+        "tokenization_differs": false
+      },
+      {
+        "annotation_differences_against_first": [],
+        "annotation_inconsistent": false,
+        "annotation_row_sha256": {
+          "yue_hk:r2.18:0344:4e7051cf87b7f37a": "acad8350a0dab84c6b10602a5615d82c47b3870aa2e82180c307dd562ee641b3",
+          "yue_hk:r2.18:0347:234720f31d139e1f": "acad8350a0dab84c6b10602a5615d82c47b3870aa2e82180c307dd562ee641b3"
+        },
+        "group_id": "grp-308b798424ced384",
+        "match_modes": {
+          "exact_form_sequence_collision": true,
+          "joined_form_string_collision": true
+        },
+        "sent_ids": [
+          "344",
+          "347"
+        ],
+        "size": 2,
+        "source_keys": [
+          "yue_hk:r2.18:0344:4e7051cf87b7f37a",
+          "yue_hk:r2.18:0347:234720f31d139e1f"
+        ],
+        "texts": [
+          "都唔得喎。",
+          "都唔得喎。"
+        ],
+        "tokenization_differs": false
+      },
+      {
+        "annotation_differences_against_first": [],
+        "annotation_inconsistent": false,
+        "annotation_row_sha256": {
+          "yue_hk:r2.18:0359:4240e7f129171c53": "c31754408b0c8e0f0c15d9a4365f7ba3a974c271932ec54987d91b692dd7ef10",
+          "yue_hk:r2.18:0362:86f28d40b7c59141": "c31754408b0c8e0f0c15d9a4365f7ba3a974c271932ec54987d91b692dd7ef10",
+          "yue_hk:r2.18:0364:cc859f69f9780ec1": "c31754408b0c8e0f0c15d9a4365f7ba3a974c271932ec54987d91b692dd7ef10",
+          "yue_hk:r2.18:0366:2c26fd8c0728e18a": "c31754408b0c8e0f0c15d9a4365f7ba3a974c271932ec54987d91b692dd7ef10"
+        },
+        "group_id": "grp-f1a412b60d5e07ad",
+        "match_modes": {
+          "exact_form_sequence_collision": true,
+          "joined_form_string_collision": true
+        },
+        "sent_ids": [
+          "359",
+          "362",
+          "364",
+          "366"
+        ],
+        "size": 4,
+        "source_keys": [
+          "yue_hk:r2.18:0359:4240e7f129171c53",
+          "yue_hk:r2.18:0362:86f28d40b7c59141",
+          "yue_hk:r2.18:0364:cc859f69f9780ec1",
+          "yue_hk:r2.18:0366:2c26fd8c0728e18a"
+        ],
+        "texts": [
+          "關我咩事喎？",
+          "關我咩事喎？",
+          "關我咩事喎？",
+          "關我咩事喎？"
+        ],
+        "tokenization_differs": false
+      },
+      {
+        "annotation_differences_against_first": [],
+        "annotation_inconsistent": false,
+        "annotation_row_sha256": {
+          "yue_hk:r2.18:0374:793860c3184fa580": "6a8a52fb1a7ab550e143ec2a4ef4187ebefbe3574732588413eb9a0f0cd69633",
+          "yue_hk:r2.18:0376:5628b6e7da9d0d5b": "6a8a52fb1a7ab550e143ec2a4ef4187ebefbe3574732588413eb9a0f0cd69633"
+        },
+        "group_id": "grp-2f8f46cedf21b468",
+        "match_modes": {
+          "exact_form_sequence_collision": true,
+          "joined_form_string_collision": true
+        },
+        "sent_ids": [
+          "374",
+          "376"
+        ],
+        "size": 2,
+        "source_keys": [
+          "yue_hk:r2.18:0374:793860c3184fa580",
+          "yue_hk:r2.18:0376:5628b6e7da9d0d5b"
+        ],
+        "texts": [
+          "噉唔通唔着咩？",
+          "噉唔通唔着咩？"
+        ],
+        "tokenization_differs": false
+      },
+      {
+        "annotation_differences_against_first": [
+          {
+            "cells": [
+              {
+                "column": "HEAD",
+                "form_other": "哎唷",
+                "form_reference": "哎唷",
+                "other": "7",
+                "reference": "6",
+                "token_id_other": "1",
+                "token_id_reference": "1"
+              },
+              {
+                "column": "HEAD",
+                "form_other": "哎吔",
+                "form_reference": "哎吔",
+                "other": "7",
+                "reference": "6",
+                "token_id_other": "3",
+                "token_id_reference": "3"
+              },
+              {
+                "column": "HEAD",
+                "form_other": "呢個",
+                "form_reference": "呢個",
+                "other": "8",
+                "reference": "6",
+                "token_id_other": "5",
+                "token_id_reference": "5"
+              },
+              {
+                "column": "DEPREL",
+                "form_other": "呢個",
+                "form_reference": "呢個",
+                "other": "obj:periph",
+                "reference": "nsubj",
+                "token_id_other": "5",
+                "token_id_reference": "5"
+              }
+            ],
+            "other_source_key": "yue_hk:r2.18:0453:92e0fd189d904214",
+            "reference_source_key": "yue_hk:r2.18:0412:00403fe3d27c61db",
+            "row_count_other": 10,
+            "row_count_reference": 10
+          }
+        ],
+        "annotation_inconsistent": true,
+        "annotation_row_sha256": {
+          "yue_hk:r2.18:0412:00403fe3d27c61db": "d9284d57589088bd9eaf072b9ffa6031b9ecd54ba8c623043ac53216e799cf32",
+          "yue_hk:r2.18:0453:92e0fd189d904214": "735d70891a1e872e7dca72739cda18216475510d1f210d7133f41be8d72cd4ee"
+        },
+        "group_id": "grp-e1924ee43c05def3",
+        "match_modes": {
+          "exact_form_sequence_collision": true,
+          "joined_form_string_collision": true
+        },
+        "sent_ids": [
+          "412",
+          "453"
+        ],
+        "size": 2,
+        "source_keys": [
+          "yue_hk:r2.18:0412:00403fe3d27c61db",
+          "yue_hk:r2.18:0453:92e0fd189d904214"
+        ],
+        "texts": [
+          "哎唷，哎吔，呢個冇人贊成嘅。",
+          "哎唷，哎吔，呢個冇人贊成嘅。"
+        ],
+        "tokenization_differs": false
+      },
+      {
+        "annotation_differences_against_first": [],
+        "annotation_inconsistent": false,
+        "annotation_row_sha256": {
+          "yue_hk:r2.18:0413:5b28f5cabd81c30e": "a17964bdab97d7bee39cd20aa8ad1408bc2cf401654ce42cf475cfd46633f2aa",
+          "yue_hk:r2.18:0454:2fc199e60c42ec2a": "a17964bdab97d7bee39cd20aa8ad1408bc2cf401654ce42cf475cfd46633f2aa"
+        },
+        "group_id": "grp-7c6e6bd14fd2ad62",
+        "match_modes": {
+          "exact_form_sequence_collision": true,
+          "joined_form_string_collision": true
+        },
+        "sent_ids": [
+          "413",
+          "454"
+        ],
+        "size": 2,
+        "source_keys": [
+          "yue_hk:r2.18:0413:5b28f5cabd81c30e",
+          "yue_hk:r2.18:0454:2fc199e60c42ec2a"
+        ],
+        "texts": [
+          "因為-因為我呢個年紀嘅人，好似呢個年紀嘅人，應該喺屋企帶孫，有孫嘛，可？帶孫呀，煮飯買菜呀。",
+          "因為-因為我呢個年紀嘅人，好似呢個年紀嘅人，應該喺屋企帶孫，有孫嘛，可？帶孫呀，煮飯買菜呀。"
+        ],
+        "tokenization_differs": false
+      },
+      {
+        "annotation_differences_against_first": [],
+        "annotation_inconsistent": false,
+        "annotation_row_sha256": {
+          "yue_hk:r2.18:0430:3ba93396d4cce9b1": "5fdd1ff69061e21f151dc08c695bbbc698c84f944006aaec392dbb8455d7b736",
+          "yue_hk:r2.18:0434:2569b860135be828": "5fdd1ff69061e21f151dc08c695bbbc698c84f944006aaec392dbb8455d7b736"
+        },
+        "group_id": "grp-fa8ac6d9cffb2562",
+        "match_modes": {
+          "exact_form_sequence_collision": true,
+          "joined_form_string_collision": true
+        },
+        "sent_ids": [
+          "430",
+          "434"
+        ],
+        "size": 2,
+        "source_keys": [
+          "yue_hk:r2.18:0430:3ba93396d4cce9b1",
+          "yue_hk:r2.18:0434:2569b860135be828"
+        ],
+        "texts": [
+          "天生我材必有用。",
+          "天生我材必有用。"
+        ],
+        "tokenization_differs": false
+      },
+      {
+        "annotation_differences_against_first": [],
+        "annotation_inconsistent": false,
+        "annotation_row_sha256": {
+          "yue_hk:r2.18:0555:4ff47d6e02cb311e": "15bc58e435ed8679ad5fa4f3c701b70315376240ed84a4066397b8abffbaa692",
+          "yue_hk:r2.18:0558:4cf57c6b0b3692bc": "15bc58e435ed8679ad5fa4f3c701b70315376240ed84a4066397b8abffbaa692",
+          "yue_hk:r2.18:0569:02aed6bfa962fa62": "15bc58e435ed8679ad5fa4f3c701b70315376240ed84a4066397b8abffbaa692",
+          "yue_hk:r2.18:0571:2392455cfc73a1a9": "15bc58e435ed8679ad5fa4f3c701b70315376240ed84a4066397b8abffbaa692",
+          "yue_hk:r2.18:0587:67086dad208c42ab": "15bc58e435ed8679ad5fa4f3c701b70315376240ed84a4066397b8abffbaa692"
+        },
+        "group_id": "grp-424eddcfeddc0831",
+        "match_modes": {
+          "exact_form_sequence_collision": true,
+          "joined_form_string_collision": true
+        },
+        "sent_ids": [
+          "555",
+          "558",
+          "569",
+          "571",
+          "587"
+        ],
+        "size": 5,
+        "source_keys": [
+          "yue_hk:r2.18:0555:4ff47d6e02cb311e",
+          "yue_hk:r2.18:0558:4cf57c6b0b3692bc",
+          "yue_hk:r2.18:0569:02aed6bfa962fa62",
+          "yue_hk:r2.18:0571:2392455cfc73a1a9",
+          "yue_hk:r2.18:0587:67086dad208c42ab"
+        ],
+        "texts": [
+          "係呀！",
+          "係呀！",
+          "係呀！",
+          "係呀！",
+          "係呀！"
+        ],
+        "tokenization_differs": false
+      },
+      {
+        "annotation_differences_against_first": [],
+        "annotation_inconsistent": false,
+        "annotation_row_sha256": {
+          "yue_hk:r2.18:0600:7de4484c28b24b69": "2cca6f898c7239b54d00af211cfe2932ab48becf40f46282867281ae0e92953e",
+          "yue_hk:r2.18:0603:0632ab5c6b55bf12": "2cca6f898c7239b54d00af211cfe2932ab48becf40f46282867281ae0e92953e"
+        },
+        "group_id": "grp-09101214dfb3df18",
+        "match_modes": {
+          "exact_form_sequence_collision": true,
+          "joined_form_string_collision": true
+        },
+        "sent_ids": [
+          "600",
+          "603"
+        ],
+        "size": 2,
+        "source_keys": [
+          "yue_hk:r2.18:0600:7de4484c28b24b69",
+          "yue_hk:r2.18:0603:0632ab5c6b55bf12"
+        ],
+        "texts": [
+          "我唔知㗎。",
+          "我唔知㗎。"
+        ],
+        "tokenization_differs": false
+      },
+      {
+        "annotation_differences_against_first": [],
+        "annotation_inconsistent": false,
+        "annotation_row_sha256": {
+          "yue_hk:r2.18:0842:ba67a3ae18767c4f": "3b579c7b102a66b11f4523130b3fd9cc13e6ea82efa85b370181a5a139487065",
+          "yue_hk:r2.18:0880:da5457cc9d705be7": "3b579c7b102a66b11f4523130b3fd9cc13e6ea82efa85b370181a5a139487065"
+        },
+        "group_id": "grp-64ba9a8754d5f217",
+        "match_modes": {
+          "exact_form_sequence_collision": true,
+          "joined_form_string_collision": true
+        },
+        "sent_ids": [
+          "842",
+          "880"
+        ],
+        "size": 2,
+        "source_keys": [
+          "yue_hk:r2.18:0842:ba67a3ae18767c4f",
+          "yue_hk:r2.18:0880:da5457cc9d705be7"
+        ],
+        "texts": [
+          "唔該主席。",
+          "唔該主席。"
+        ],
+        "tokenization_differs": false
+      }
+    ],
+    "sentences_in_duplicate_groups": 49
+  },
+  "splits": {
+    "dev": {
+      "deprel_distribution": {
+        "acl": 22,
+        "advcl": 23,
+        "advcl:coverb": 8,
+        "advmod": 160,
+        "advmod:df": 2,
+        "amod": 15,
+        "appos": 6,
+        "aux": 52,
+        "case": 50,
+        "case:loc": 7,
+        "cc": 7,
+        "ccomp": 71,
+        "clf": 17,
+        "clf:det": 8,
+        "compound": 33,
+        "compound:dir": 3,
+        "compound:ext": 1,
+        "compound:quant": 2,
+        "compound:vo": 3,
+        "compound:vv": 16,
+        "conj": 44,
+        "cop": 7,
+        "csubj": 3,
+        "det": 36,
+        "discourse": 45,
+        "discourse:sp": 114,
+        "dislocated": 1,
+        "flat": 1,
+        "iobj": 2,
+        "mark": 17,
+        "mark:adv": 1,
+        "mark:rel": 11,
+        "nmod": 24,
+        "nsubj": 117,
+        "nummod": 21,
+        "obj": 98,
+        "obj:periph": 6,
+        "obl": 29,
+        "obl:tmod": 14,
+        "parataxis": 14,
+        "punct": 303,
+        "reparandum": 21,
+        "root": 101,
+        "vocative": 11,
+        "xcomp": 10
+      },
+      "sentence_count": 101,
+      "sentence_length_word_nodes": {
+        "histogram": {
+          "10": 9,
+          "11": 5,
+          "12": 3,
+          "13": 1,
+          "14": 2,
+          "15": 2,
+          "17": 4,
+          "18": 1,
+          "19": 2,
+          "2": 3,
+          "21": 1,
+          "22": 1,
+          "23": 4,
+          "24": 1,
+          "25": 1,
+          "26": 2,
+          "27": 1,
+          "28": 1,
+          "29": 2,
+          "3": 5,
+          "33": 1,
+          "34": 1,
+          "36": 1,
+          "38": 1,
+          "39": 1,
+          "4": 3,
+          "40": 2,
+          "41": 2,
+          "42": 1,
+          "43": 1,
+          "46": 2,
+          "5": 7,
+          "54": 1,
+          "6": 9,
+          "7": 4,
+          "8": 8,
+          "9": 5
+        },
+        "max": 54,
+        "mean": 15.415841584158416,
+        "median": 10,
+        "min": 2,
+        "p25": 6.0,
+        "p75": 23.0,
+        "p95": 41.0
+      },
+      "sentence_ratio": 0.10059760956175298,
+      "source_distribution": {
+        "Election of President (LegCo, 2016-10-12)": 45,
+        "Missing days / 小時光": 32,
+        "Tempo in Temple / 廟眾樂樂": 15,
+        "What day is today / 今日星期幾": 9
+      },
+      "upos_distribution": {
+        "ADJ": 30,
+        "ADP": 30,
+        "ADV": 177,
+        "AUX": 63,
+        "CCONJ": 16,
+        "DET": 35,
+        "INTJ": 29,
+        "NOUN": 225,
+        "NUM": 24,
+        "PART": 164,
+        "PRON": 147,
+        "PROPN": 20,
+        "PUNCT": 303,
+        "SCONJ": 11,
+        "VERB": 283
+      },
+      "word_node_count": 1557
+    },
+    "test": {
+      "deprel_distribution": {
+        "acl": 16,
+        "advcl": 19,
+        "advcl:coverb": 6,
+        "advmod": 140,
+        "amod": 19,
+        "appos": 3,
+        "aux": 52,
+        "case": 34,
+        "case:loc": 10,
+        "cc": 10,
+        "ccomp": 45,
+        "clf": 21,
+        "clf:det": 17,
+        "compound": 12,
+        "compound:dir": 11,
+        "compound:ext": 1,
+        "compound:quant": 1,
+        "compound:vv": 11,
+        "conj": 45,
+        "cop": 12,
+        "csubj": 2,
+        "det": 35,
+        "discourse": 21,
+        "discourse:sp": 120,
+        "dislocated": 3,
+        "flat": 7,
+        "iobj": 3,
+        "mark": 20,
+        "mark:adv": 1,
+        "mark:rel": 15,
+        "nmod": 22,
+        "nsubj": 86,
+        "nummod": 23,
+        "obj": 79,
+        "obj:periph": 2,
+        "obl": 17,
+        "obl:tmod": 16,
+        "parataxis": 15,
+        "punct": 255,
+        "reparandum": 13,
+        "root": 100,
+        "vocative": 9,
+        "xcomp": 11
+      },
+      "sentence_count": 100,
+      "sentence_length_word_nodes": {
+        "histogram": {
+          "10": 2,
+          "11": 5,
+          "12": 3,
+          "14": 4,
+          "15": 3,
+          "17": 3,
+          "18": 1,
+          "19": 1,
+          "2": 1,
+          "20": 3,
+          "22": 2,
+          "23": 2,
+          "24": 1,
+          "25": 2,
+          "26": 2,
+          "27": 1,
+          "29": 1,
+          "3": 6,
+          "30": 1,
+          "31": 2,
+          "35": 2,
+          "38": 1,
+          "39": 1,
+          "4": 11,
+          "42": 1,
+          "43": 1,
+          "45": 1,
+          "5": 7,
+          "53": 1,
+          "6": 9,
+          "7": 6,
+          "8": 6,
+          "9": 7
+        },
+        "max": 53,
+        "mean": 13.6,
+        "median": 9.0,
+        "min": 2,
+        "p25": 5.75,
+        "p75": 19.25,
+        "p95": 38.05
+      },
+      "sentence_ratio": 0.099601593625498,
+      "source_distribution": {
+        "Election of President (LegCo, 2016-10-12)": 36,
+        "Missing days / 小時光": 48,
+        "Tempo in Temple / 廟眾樂樂": 7,
+        "What day is today / 今日星期幾": 9
+      },
+      "upos_distribution": {
+        "ADJ": 38,
+        "ADP": 27,
+        "ADV": 149,
+        "AUX": 73,
+        "CCONJ": 12,
+        "DET": 34,
+        "INTJ": 15,
+        "NOUN": 213,
+        "NUM": 24,
+        "PART": 157,
+        "PRON": 98,
+        "PROPN": 22,
+        "PUNCT": 255,
+        "SCONJ": 16,
+        "VERB": 227
+      },
+      "word_node_count": 1360
+    },
+    "train": {
+      "deprel_distribution": {
+        "acl": 138,
+        "advcl": 192,
+        "advcl:coverb": 56,
+        "advmod": 1159,
+        "advmod:df": 3,
+        "amod": 102,
+        "appos": 38,
+        "aux": 305,
+        "case": 275,
+        "case:loc": 52,
+        "cc": 62,
+        "ccomp": 323,
+        "clf": 174,
+        "clf:det": 84,
+        "compound": 132,
+        "compound:dir": 46,
+        "compound:ext": 15,
+        "compound:quant": 11,
+        "compound:vo": 12,
+        "compound:vv": 89,
+        "conj": 459,
+        "cop": 75,
+        "csubj": 11,
+        "det": 265,
+        "discourse": 272,
+        "discourse:sp": 919,
+        "dislocated": 13,
+        "flat": 19,
+        "iobj": 9,
+        "mark": 114,
+        "mark:adv": 8,
+        "mark:rel": 81,
+        "nmod": 193,
+        "nsubj": 721,
+        "nsubj:pass": 1,
+        "nsubj:periph": 13,
+        "nummod": 162,
+        "obj": 732,
+        "obj:periph": 20,
+        "obl": 140,
+        "obl:agent": 3,
+        "obl:patient": 2,
+        "obl:tmod": 108,
+        "parataxis": 114,
+        "punct": 2171,
+        "reparandum": 131,
+        "root": 803,
+        "vocative": 45,
+        "xcomp": 129
+      },
+      "sentence_count": 803,
+      "sentence_length_word_nodes": {
+        "histogram": {
+          "10": 34,
+          "11": 30,
+          "12": 22,
+          "13": 23,
+          "14": 23,
+          "15": 21,
+          "16": 18,
+          "17": 13,
+          "18": 20,
+          "19": 8,
+          "2": 25,
+          "20": 15,
+          "21": 11,
+          "22": 13,
+          "23": 13,
+          "24": 15,
+          "25": 11,
+          "26": 5,
+          "27": 14,
+          "28": 7,
+          "29": 13,
+          "3": 57,
+          "30": 10,
+          "31": 4,
+          "32": 6,
+          "33": 4,
+          "34": 8,
+          "35": 7,
+          "36": 3,
+          "38": 3,
+          "39": 2,
+          "4": 45,
+          "40": 4,
+          "41": 1,
+          "42": 3,
+          "43": 3,
+          "44": 1,
+          "45": 1,
+          "46": 2,
+          "47": 2,
+          "48": 1,
+          "5": 56,
+          "50": 2,
+          "51": 4,
+          "53": 1,
+          "56": 1,
+          "6": 61,
+          "64": 2,
+          "65": 1,
+          "7": 59,
+          "76": 1,
+          "8": 54,
+          "9": 40
+        },
+        "max": 76,
+        "mean": 13.699875466998755,
+        "median": 10,
+        "min": 2,
+        "p25": 6.0,
+        "p75": 19.0,
+        "p95": 35.0
+      },
+      "sentence_ratio": 0.799800796812749,
+      "source_distribution": {
+        "Election of President (LegCo, 2016-10-12)": 273,
+        "Missing days / 小時光": 330,
+        "Tempo in Temple / 廟眾樂樂": 115,
+        "What day is today / 今日星期幾": 85
+      },
+      "upos_distribution": {
+        "ADJ": 305,
+        "ADP": 170,
+        "ADV": 1252,
+        "AUX": 412,
+        "CCONJ": 95,
+        "DET": 262,
+        "INTJ": 172,
+        "NOUN": 1647,
+        "NUM": 184,
+        "PART": 1214,
+        "PRON": 932,
+        "PROPN": 125,
+        "PUNCT": 2171,
+        "SCONJ": 86,
+        "VERB": 1974
+      },
+      "word_node_count": 11001
+    }
+  }
+}

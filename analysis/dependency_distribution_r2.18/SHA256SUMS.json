@@ -1,0 +1,10 @@
+{
+  "README.md": "cbaa22a5556df81be31a54cb10238957f842bd6466dfd311c392ca02a6f87069",
+  "full_corpus_descriptive_attachment_signature_shifts.csv": "01ace80e11e1f9dd8320f08ad2d0c418accf123a6973fae983c17461adb2798f",
+  "full_corpus_descriptive_parallel_sentence_structural_shifts.csv": "c298c65bdc1f6264201f64c6e4f9d388fd31a7106d89d635e1c20f7b43683e57",
+  "full_corpus_descriptive_relation_distribution.csv": "7fad36b24a10760b78a8e9a265490b3ad2d140e799149b2d45537b6d21405e72",
+  "summary.json": "79e27ee95976b725d3cb064abcf537fdcfa1486cae8e672761aa9fe6dc82c33a",
+  "train_only_attachment_signature_shifts.csv": "f1013a6d4d0cdd02081ad7b80b0a3865a4b7ae588583a32b64e883ff2af36c73",
+  "train_only_parallel_sentence_structural_shifts.csv": "0a17b4ac3c7fff05e902291b73cb3d1df4801969e36aabf9a2b05ea34b3d608c",
+  "train_only_relation_distribution.csv": "17b559a4814cae6125e482264e48b38516b6d3782265d6bc7b68d976f153c195"
+}
