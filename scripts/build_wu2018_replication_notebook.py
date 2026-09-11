@@ -286,6 +286,7 @@ Edges are `head → dependent`. CES is root-first preorder; HES is children-firs
 code(r"""
 SHIFT = "SHIFT"
 SWAP = "SWAP"
+FINISH_WORDS = "FINISH_WORDS"
 def children_and_root(heads):
     children = defaultdict(list); roots = []
     for dep, head in enumerate(heads, 1):
@@ -351,6 +352,7 @@ def actions_to_dependency_tree(actions, n_tokens):
     stack, buffer = [0], list(range(1,n_tokens+1))
     heads, rels = [None]*n_tokens, [None]*n_tokens
     for action in actions:
+        if action == FINISH_WORDS: continue  # joint decoder control; no parser-state effect
         if action == SHIFT:
             if not buffer: raise ValueError("SHIFT with empty buffer")
             stack.append(buffer.pop(0)); continue
@@ -369,6 +371,23 @@ def actions_to_dependency_tree(actions, n_tokens):
         raise ValueError("Incomplete action sequence")
     return heads, rels
 
+def dependency_tree_to_joint_actions(heads, deprels):
+    # Insert FINISH_WORDS immediately after the final token's first SHIFT.
+    parser_actions=dependency_tree_to_actions(heads,deprels)
+    stack=[0]; pending=[]; n_new=0; joint=[]
+    for action in parser_actions:
+        joint.append(action)
+        if action==SHIFT:
+            if pending: stack.append(pending.pop(0))
+            else:
+                n_new+=1; stack.append(n_new)
+                if n_new==len(heads): joint.append(FINISH_WORDS)
+        elif action==SWAP: pending.insert(0,stack.pop(-2))
+        elif action.startswith("LEFT_REDUCE:"): stack.pop(-2)
+        elif action.startswith("RIGHT_REDUCE:"): stack.pop()
+    assert joint.count(FINISH_WORDS)==1 and n_new==len(heads)
+    return joint
+
 # Unit tests: identity-preserving traversals and exact action/tree round trips.
 for sent in mandarin_all:
     ces, hes = tree_traversals(sent.heads)
@@ -382,6 +401,9 @@ for sent in cantonese_all:
     h, r = actions_to_dependency_tree(actions, len(sent.ids))
     assert h == sent.heads and r == sent.deprels
     swap_counts.append(actions.count(SWAP))
+    joint=dependency_tree_to_joint_actions(sent.heads,sent.deprels)
+    h2,r2=actions_to_dependency_tree(joint,len(sent.ids))
+    assert h2==sent.heads and r2==sent.deprels
 
 nonproj_m = [p.pair_id for p in pairs if not is_projective(p.mandarin.heads)]
 nonproj_c = [p.pair_id for p in pairs if not is_projective(p.cantonese.heads)]
@@ -436,7 +458,7 @@ class Vocab:
 src_vocab = Vocab((w for p in train_pairs for w in p.mandarin.forms), ["<pad>","<unk>"])
 tgt_vocab = Vocab((w for p in train_pairs for w in p.cantonese.forms), ["<pad>","<unk>","<bos>","<eos>"])
 train_rels = sorted(set(r for p in train_pairs for r in p.cantonese.deprels if r != "root"))
-actions_inventory = ["<start_action>", SHIFT, SWAP, "LEFT_REDUCE:<unk_rel>", "RIGHT_REDUCE:<unk_rel>", "RIGHT_REDUCE:root"]
+actions_inventory = ["<start_action>", SHIFT, SWAP, FINISH_WORDS, "LEFT_REDUCE:<unk_rel>", "RIGHT_REDUCE:<unk_rel>", "RIGHT_REDUCE:root"]
 actions_inventory += [f"{d}:{r}" for d in ["LEFT_REDUCE","RIGHT_REDUCE"] for r in train_rels]
 action_vocab = Vocab(actions_inventory, [])
 
@@ -537,8 +559,8 @@ class WuDep2Dep(nn.Module):
     def teacher_forced_loss(self,pair):
         memory=self.encode(pair.mandarin); z=torch.zeros(HIDDEN_DIM,device=DEVICE)
         word_state=z.clone(); action_state=z.clone(); stack=[(0,self.root)]; prev_action="<start_action>"
-        prev_word=tgt_vocab.stoi["<bos>"]; word_losses=[]; action_losses=[]; next_word=0; pending=[]
-        gold_actions=dependency_tree_to_actions(pair.cantonese.heads,pair.cantonese.deprels)
+        prev_word=tgt_vocab.stoi["<bos>"]; word_losses=[]; action_losses=[]; next_word=0; pending=[]; words_finished=False
+        gold_actions=dependency_tree_to_joint_actions(pair.cantonese.heads,pair.cantonese.deprels)
         for gold_action in gold_actions:
             action_state,logits,ctx,alpha,sc=self.action_step(prev_action,word_state,action_state,stack,memory)
             normalized=normalize_action(gold_action); aid=action_vocab.stoi[normalized]
@@ -552,40 +574,41 @@ class WuDep2Dep(nn.Module):
                     next_word+=1; prev_word=wid; stack.append((next_word,word_state))
             elif gold_action==SWAP:
                 pending.insert(0,stack.pop(-2))
+            elif gold_action==FINISH_WORDS:
+                word_state,eos_logits=self.word_step(prev_word,word_state,action_state,ctx,sc)
+                word_losses.append(F.cross_entropy(eos_logits.unsqueeze(0),torch.tensor([tgt_vocab.stoi["<eos>"]],device=DEVICE)))
+                words_finished=True
             else: self.reduce_stack(stack,gold_action,aid)
             prev_action=normalized
-        assert next_word==len(pair.cantonese.forms) and not pending and len(stack)==1
-        ctx,_=self.attn(action_state,memory); sc=self.stack_context(stack)
-        word_state,eos_logits=self.word_step(prev_word,word_state,action_state,ctx,sc)
-        word_losses.append(F.cross_entropy(eos_logits.unsqueeze(0),torch.tensor([tgt_vocab.stoi["<eos>"]],device=DEVICE)))
+        assert words_finished and next_word==len(pair.cantonese.forms) and not pending and len(stack)==1
         wl=torch.stack(word_losses).mean(); al=torch.stack(action_losses).mean(); return wl+LAMBDA_ACTION*al,wl,al
 """),
 md("""
 ## 8. Constrained decoding and scientifically valid metrics
 
-Conditioned decoding supplies the next gold Cantonese token only on a **first-time SHIFT**, while the action model constructs its own unrestricted tree. A token moved to the pending buffer by SWAP is re-SHIFTed with its existing Word-RNN representation and is not generated twice. Free decoding follows the same distinction; EOS closes the new-word stream, then pending tokens and reductions finish the tree. Legal-action masking enforces Nivre's monotonic SWAP precondition and a complete single-root tree. Standard UAS/LAS is computed for free generation only on exact-token matches.
+Conditioned decoding supplies the next gold Cantonese token only on a **first-time SHIFT**, while the action model constructs its own unrestricted tree. A token moved to the pending buffer by SWAP is re-SHIFTed with its existing Word-RNN representation and is not generated twice. The explicit `FINISH_WORDS` action closes the new-word stream and supervises the Word-RNN's EOS prediction; pending tokens and reductions then finish the tree. This gives training and inference the same stopping decision, even though a non-projective parse may still need SWAP/reduction actions after the last new token. Legal-action masking enforces Nivre's monotonic SWAP precondition and a complete single-root tree. Standard UAS/LAS is computed for free generation only on exact-token matches.
 """),
 code(r"""
-def legal_action_ids(stack, pending, n_new, n_tokens=None, ended=False):
+def legal_action_ids(stack, pending, n_new, n_tokens=None, ended=False, conditioned=False):
     legal=[]
-    more_new=(n_tokens is not None and n_new<n_tokens) or (n_tokens is None and not ended)
+    more_new=not ended and (n_tokens is None or n_new<n_tokens)
     if pending or more_new: legal.append(action_vocab.stoi[SHIFT])
+    if not ended and n_new>0 and (not conditioned or n_new==n_tokens): legal.append(action_vocab.stoi[FINISH_WORDS])
     if len(stack)>=3:
         legal += [i for a,i in action_vocab.stoi.items() if a.startswith(("LEFT_REDUCE:","RIGHT_REDUCE:")) and not a.endswith(":root")]
     if ALLOW_SWAP and len(stack)>=2 and 0 < stack[-2][0] < stack[-1][0]: legal.append(action_vocab.stoi[SWAP])
-    all_new=(n_tokens is not None and n_new==n_tokens) or (n_tokens is None and ended)
-    if len(stack)==2 and not pending and all_new: legal.append(action_vocab.stoi["RIGHT_REDUCE:root"])
+    if len(stack)==2 and not pending and ended: legal.append(action_vocab.stoi["RIGHT_REDUCE:root"])
     return sorted(set(legal))
 
 @torch.no_grad()
 def decode_gold_conditioned(model,pair,save_attention=False):
     model.eval(); memory=model.encode(pair.mandarin); z=torch.zeros(HIDDEN_DIM,device=DEVICE)
     ws=z.clone(); ast=z.clone(); stack=[(0,model.root)]; prev_a="<start_action>"; prev_w=tgt_vocab.stoi["<bos>"]
-    n_new=0; pending=[]; arcs={}; attentions=[]; actions=[]; n=len(pair.cantonese.forms)
+    n_new=0; pending=[]; ended=False; arcs={}; attentions=[]; actions=[]; n=len(pair.cantonese.forms)
     for _ in range(2*n*n+4*n+10):
-        if len(stack)==1 and stack[0][0]==0 and n_new==n and not pending: break
+        if ended and len(stack)==1 and stack[0][0]==0 and n_new==n and not pending: break
         ast,logits,ctx,alpha,sc=model.action_step(prev_a,ws,ast,stack,memory)
-        legal=legal_action_ids(stack,pending,n_new,n_tokens=n); assert legal
+        legal=legal_action_ids(stack,pending,n_new,n_tokens=n,ended=ended,conditioned=True); assert legal
         aid=max(legal,key=lambda i:float(logits[i])); action=action_vocab.itos[aid]; actions.append(action)
         if action==SHIFT:
             if pending:
@@ -595,6 +618,8 @@ def decode_gold_conditioned(model,pair,save_attention=False):
                 n_new+=1; prev_w=wid; stack.append((n_new,ws)); attentions.append(alpha.cpu().numpy())
         elif action==SWAP:
             pending.insert(0,stack.pop(-2))
+        elif action==FINISH_WORDS:
+            ws,_=model.word_step(prev_w,ws,ast,ctx,sc); ended=True
         else:
             kind,rel=action.split(":",1); s1,s0=stack[-2][0],stack[-1][0]
             dep,head=(s1,s0) if kind=="LEFT_REDUCE" else (s0,s1); arcs[dep]=(head,rel)
@@ -611,28 +636,30 @@ def decode_free(model,pair):
     for _ in range(2*MAX_DECODE_LEN*MAX_DECODE_LEN+4*MAX_DECODE_LEN+10):
         if ended and len(stack)==1 and stack[0][0]==0 and not pending: break
         ast,logits,ctx,alpha,sc=model.action_step(prev_a,ws,ast,stack,memory)
-        legal=legal_action_ids(stack,pending,len(tokens),n_tokens=None,ended=ended)
+        legal=legal_action_ids(stack,pending,len(tokens),n_tokens=MAX_DECODE_LEN,ended=ended)
         if not legal: ended=True; continue
         aid=max(legal,key=lambda i:float(logits[i])); action=action_vocab.itos[aid]; actions.append(action)
         if action==SHIFT:
             if pending:
                 stack.append(pending.pop(0))
             else:
-                ws,wlogits=model.word_step(prev_w,ws,ast,ctx,sc); wid=int(wlogits.argmax())
-                if not tokens: wlogits[tgt_vocab.stoi["<eos>"]]=-float("inf"); wid=int(wlogits.argmax())
-                if wid==tgt_vocab.stoi["<eos>"] or len(tokens)>=MAX_DECODE_LEN:
-                    ended=True
-                else:
-                    token=tgt_vocab.itos[wid]; tokens.append(token); prev_w=wid; stack.append((len(tokens),ws)); attentions.append(alpha.cpu().numpy())
+                ws,wlogits=model.word_step(prev_w,ws,ast,ctx,sc)
+                for special in ["<pad>","<bos>","<eos>"]: wlogits[tgt_vocab.stoi[special]]=-float("inf")
+                wid=int(wlogits.argmax()); token=tgt_vocab.itos[wid]; tokens.append(token); prev_w=wid
+                stack.append((len(tokens),ws)); attentions.append(alpha.cpu().numpy())
         elif action==SWAP:
             pending.insert(0,stack.pop(-2))
+        elif action==FINISH_WORDS:
+            ws,_=model.word_step(prev_w,ws,ast,ctx,sc); ended=True
         else:
             kind,rel=action.split(":",1); s1,s0=stack[-2][0],stack[-1][0]
             dep,head=(s1,s0) if kind=="LEFT_REDUCE" else (s0,s1); arcs[dep]=(head,rel)
             model.reduce_stack(stack,action,aid)
         prev_a=action
     heads=[arcs.get(i,(0,"dep"))[0] for i in range(1,len(tokens)+1)]; rels=[arcs.get(i,(0,"dep"))[1] for i in range(1,len(tokens)+1)]
-    return {"tokens":tokens,"heads":heads,"deprels":rels,"actions":actions,"attention":attentions}
+    complete=ended and len(stack)==1 and stack[0][0]==0 and not pending
+    return {"tokens":tokens,"heads":heads,"deprels":rels,"actions":actions,"attention":attentions,
+            "complete_parse":complete,"hit_max_decode_length":len(tokens)>=MAX_DECODE_LEN}
 
 def tree_metrics(predictions,pairs):
     total=uas=las=roots=labels=exact=0; relstat=defaultdict(Counter)
@@ -659,7 +686,11 @@ def text_metrics(free,pairs):
     hyps=[" ".join(x["tokens"]) for x in free]; refs=[[" ".join(p.cantonese.forms) for p in pairs]]
     bleu=sacrebleu.corpus_bleu(hyps,refs,tokenize="none").score; chrf=sacrebleu.corpus_chrf(hyps,refs).score
     matches=[x["tokens"]==p.cantonese.forms for x,p in zip(free,pairs)]
-    result={"BLEU":bleu,"chrF":chrf,"exact_token_match_rate":100*sum(matches)/len(matches)}
+    result={"BLEU":bleu,"chrF":chrf,"exact_token_match_rate":100*sum(matches)/len(matches),
+            "mean_hypothesis_length":float(np.mean([len(x["tokens"]) for x in free])),
+            "mean_reference_length":float(np.mean([len(p.cantonese.forms) for p in pairs])),
+            "max_decode_length_hit_count":sum(bool(x["hit_max_decode_length"]) for x in free),
+            "complete_parse_rate":100*sum(bool(x["complete_parse"]) for x in free)/len(free)}
     idx=[i for i,m in enumerate(matches) if m]
     if idx:
         subset,_=tree_metrics([free[i] for i in idx],[pairs[i] for i in idx]); result["exact_match_subset_UAS"]=subset["UAS"]; result["exact_match_subset_LAS"]=subset["LAS"]
@@ -669,7 +700,7 @@ def text_metrics(free,pairs):
 md("""
 ## 9. Training, DEV-only early stopping, and checkpoints
 
-The joint loss is `L_word + λ_action L_action`. Each reported sentence loss is normalized over its word/action decisions; gradients accumulate across `BATCH_SIZE` sentences, are clipped, and then updated. DEV total loss controls early stopping and the primary checkpoint; a separate checkpoint is selected by DEV gold-target-conditioned LAS. TEST remains untouched until all training and selection finish.
+The joint loss is `L_word + λ_action L_action`. Each reported sentence loss is normalized over its word/action decisions; gradients accumulate across `BATCH_SIZE` sentences, are clipped, and then updated. DEV total loss controls early stopping and selects the checkpoint used for free translation (BLEU/chrF). A separate checkpoint selected by DEV gold-target-conditioned LAS is used for gold-conditioned syntax (UAS/LAS). TEST remains untouched until both selections finish.
 """),
 code(r"""
 def mean_losses(model,items):
@@ -704,42 +735,48 @@ def train_variant(variant,label):
         if dev_tree["LAS"] > best_las:
             best_las=dev_tree["LAS"]; torch.save(payload,las_path)
         if stale>=PATIENCE: print("Early stopping on DEV total loss."); break
-    checkpoint=torch.load(loss_path,map_location=DEVICE,weights_only=False); model.load_state_dict(checkpoint["model_state"])
-    return model,history,checkpoint["epoch"],sum(x.numel() for x in model.parameters())
+    loss_checkpoint=torch.load(loss_path,map_location=DEVICE,weights_only=False)
+    las_checkpoint=torch.load(las_path,map_location=DEVICE,weights_only=False)
+    translation_model=WuDep2Dep(variant).to(DEVICE); translation_model.load_state_dict(loss_checkpoint["model_state"])
+    syntax_model=WuDep2Dep(variant).to(DEVICE); syntax_model.load_state_dict(las_checkpoint["model_state"])
+    selection={"translation_checkpoint":"best_by_dev_total_loss","syntax_checkpoint":"best_by_dev_LAS",
+               "best_epoch_by_dev_total_loss":loss_checkpoint["epoch"],"best_epoch_by_dev_LAS":las_checkpoint["epoch"],
+               "best_dev_total_loss":loss_checkpoint["dev"]["dev_total_loss"],"best_dev_LAS":las_checkpoint["dev"]["dev_LAS"]}
+    return {"translation":translation_model,"syntax":syntax_model},history,selection,sum(x.numel() for x in model.parameters())
 
 VARIANTS=[("sequence","Sequence-only"),("ces","Sequence+CES"),("hes","Sequence+HES"),("full","Full CES+HES")]
 if not RUN_ABLATIONS: VARIANTS=[("full","Full CES+HES")]
 models={}; all_history=[]; model_info={}
 for variant,label in VARIANTS:
-    model,hist,best_epoch,nparams=train_variant(variant,label); models[variant]=model; all_history.extend(hist)
-    model_info[variant]={"label":label,"best_epoch_by_dev_total_loss":best_epoch,"parameter_count":nparams}
+    selected,hist,selection,nparams=train_variant(variant,label); models[variant]=selected; all_history.extend(hist)
+    model_info[variant]={"label":label,"parameter_count":nparams,**selection}
 pd.DataFrame(all_history).to_csv(RESULTS/"training_history.csv",index=False)
 print(model_info)
 """),
 md("""
 ## 10. Frozen-checkpoint DEV and untouched TEST evaluation
 
-All main-table UAS/LAS values below are **gold-target-conditioned standard attachment scores** on identical UD token sequences. End-to-end BLEU/chrF use space-separated UD tokens and sacreBLEU `tokenize=none` for BLEU. Freely generated mismatched sequences receive no raw-index UAS/LAS.
+All main-table UAS/LAS values below are **gold-target-conditioned standard attachment scores** on identical UD token sequences, evaluated from the DEV-LAS-selected checkpoint. End-to-end BLEU/chrF use the DEV-total-loss-selected checkpoint, space-separated UD tokens, and sacreBLEU `tokenize=none` for BLEU. Freely generated mismatched sequences receive no raw-index UAS/LAS.
 """),
 code(r"""
 summary={}; table_rows=[]; saved_full=None
 for variant,label in VARIANTS:
-    model=models[variant]
-    dev_cond,dev_rel,dev_preds=conditioned_eval(model,dev_pairs); test_cond,test_rel,test_preds=conditioned_eval(model,test_pairs)
-    dev_free=[decode_free(model,p) for p in tqdm(dev_pairs,desc=f"{label} DEV free",leave=False)]
-    test_free=[decode_free(model,p) for p in tqdm(test_pairs,desc=f"{label} TEST free",leave=False)]
+    syntax_model=models[variant]["syntax"]; translation_model=models[variant]["translation"]
+    dev_cond,dev_rel,dev_preds=conditioned_eval(syntax_model,dev_pairs); test_cond,test_rel,test_preds=conditioned_eval(syntax_model,test_pairs)
+    dev_free=[decode_free(translation_model,p) for p in tqdm(dev_pairs,desc=f"{label} DEV free",leave=False)]
+    test_free=[decode_free(translation_model,p) for p in tqdm(test_pairs,desc=f"{label} TEST free",leave=False)]
     dev_text=text_metrics(dev_free,dev_pairs); test_text=text_metrics(test_free,test_pairs)
     summary[variant]={"model":label,"model_info":model_info[variant],"dev_gold_conditioned":dev_cond,"test_gold_conditioned":test_cond,
                       "dev_end_to_end":dev_text,"test_end_to_end":test_text}
     table_rows.append({"Model":label,"Dev BLEU":dev_text["BLEU"],"Dev chrF":dev_text["chrF"],"Dev UAS":dev_cond["UAS"],"Dev LAS":dev_cond["LAS"],
                        "Test BLEU":test_text["BLEU"],"Test chrF":test_text["chrF"],"Test UAS":test_cond["UAS"],"Test LAS":test_cond["LAS"],
                        "End-to-end exact-token-match rate":test_text["exact_token_match_rate"]})
-    if variant=="full" or (saved_full is None and len(VARIANTS)==1): saved_full=(model,test_preds,test_free,test_rel)
+    if variant=="full" or (saved_full is None and len(VARIANTS)==1): saved_full=(syntax_model,test_preds,test_free,test_rel)
 
 results_table=pd.DataFrame(table_rows)
 (RESULTS/"metrics_summary.json").write_text(json.dumps(summary,ensure_ascii=False,indent=2),encoding="utf-8")
 results_table.to_csv(RESULTS/"metrics_summary.csv",index=False)
-display(results_table.style.format(precision=2).set_caption("UAS/LAS are gold-target-conditioned standard scores"))
+display(results_table.style.format(precision=2).set_caption("BLEU/chrF: best DEV total loss; UAS/LAS: best DEV LAS (gold-target-conditioned)"))
 
 model,test_preds,test_free,test_rel=saved_full
 test_rel.to_csv(RESULTS/"relation_metrics.csv",index=False)
@@ -793,15 +830,16 @@ report=f'''# RESULTS — Mandarin-to-Cantonese Dependency-to-Dependency Translat
 - Target non-projective trees retained: {len(nonproj_c)} / {len(pairs)} ({100*len(nonproj_c)/len(pairs):.2f}%). Arc-standard+SWAP round trips recover every gold HEAD/DEPREL; exclusions: 0.
 - Modeling split over all pairs: train/dev/test = {len(train_pairs)}/{len(dev_pairs)}/{len(test_pairs)} (seed {SEED}). Pair-level random split; source documents span splits, so document leakage is possible.
 - Architecture: parallel forward/backward/CES/HES GRUs, affine-sum/tanh fusion, Bahdanau attention, interacting word/action GRUs, relation-aware differentiable unrestricted arc-standard+SWAP stack.
-- Full-model parameter count: {sm['model_info']['parameter_count']:,}; best epoch by DEV total loss: {sm['model_info']['best_epoch_by_dev_total_loss']}.
+- Full-model parameter count: {sm['model_info']['parameter_count']:,}; translation checkpoint epoch (best DEV total loss): {sm['model_info']['best_epoch_by_dev_total_loss']}; syntax checkpoint epoch (best DEV LAS): {sm['model_info']['best_epoch_by_dev_LAS']}.
 - DEV gold-conditioned UAS/LAS: {sm['dev_gold_conditioned']['UAS']:.2f}/{sm['dev_gold_conditioned']['LAS']:.2f}.
 - Untouched TEST BLEU/chrF: {sm['test_end_to_end']['BLEU']:.2f}/{sm['test_end_to_end']['chrF']:.2f}.
+- TEST generated/reference mean length: {sm['test_end_to_end']['mean_hypothesis_length']:.2f}/{sm['test_end_to_end']['mean_reference_length']:.2f}; max-length hits: {sm['test_end_to_end']['max_decode_length_hit_count']}/{len(test_pairs)}; complete parses: {sm['test_end_to_end']['complete_parse_rate']:.2f}%.
 - Untouched TEST gold-conditioned UAS/LAS: {sm['test_gold_conditioned']['UAS']:.2f}/{sm['test_gold_conditioned']['LAS']:.2f}.
 - TEST end-to-end exact-token-match rate: {sm['test_end_to_end']['exact_token_match_rate']:.2f}%.
 
 ## Source-syntax ablations
 
-UAS/LAS in this table are gold-target-conditioned standard scores.
+BLEU/chrF use the best-DEV-total-loss checkpoint. UAS/LAS use the best-DEV-LAS checkpoint and are gold-target-conditioned standard scores.
 
 {ablation_md}
 

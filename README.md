@@ -142,6 +142,8 @@ test 评分被隔离在最后一个单元格，只加载已经由 dev 选定的 
 
 完整、自包含的 Colab notebook 位于 [`notebooks/wu2018_mandarin_cantonese_replication.ipynb`](notebooks/wu2018_mandarin_cantonese_replication.ipynb)。它自动下载并校验 UD r2.18 Chinese-HK/Cantonese-HK，仅按显式 `parallel_id` 恢复 1,004 个真实平行配对，实现 CES/HES、多流 GRU 编码器、Bahdanau attention、交互式 word/action GRU、DEV-only checkpoint 选择、四项 source-syntax 消融以及两种严格区分的评估模式。
 
+联合解码加入显式 `FINISH_WORDS` 动作：最后一个新粤语 token 生成后可以关闭词序列，但仍允许为非投射树继续执行 `SWAP` 和 reduce。这样训练与推理使用同一个结束决策，不再出现“训练只在整棵树归约完才监督 EOS、推理却只能在 SHIFT 时预测 EOS”的错位。最终 BLEU/chrF 使用 DEV total loss 最优 checkpoint，gold-target-conditioned UAS/LAS 使用 DEV LAS 最优 checkpoint；两者的 epoch 和选择依据均写入结果包。
+
 ### 低资源非投射扩展：保留全部 gold pairs
 
 标准 Wu-style arc-standard 只能表示投射树，但 Cantonese-HK 中有 118/1,004（11.75%）棵非投射目标树；对如此小的数据集直接删除并不是无成本的清洗，而会造成明显的信息损失和选择偏差。本实验因此加入 Nivre (2009) 的 `SWAP` transition：它把 second-top stack item 移回 buffer，并用 gold tree 的 projective order 构造确定性 oracle。被 SWAP 后重新 SHIFT 的 token 复用已有 Word-RNN representation，不会被翻译器重复生成；只有首次 SHIFT 才触发粤语 word generation。
