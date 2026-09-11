@@ -151,3 +151,13 @@ test 评分被隔离在最后一个单元格，只加载已经由 dev 选定的 
 标准 Wu-style arc-standard 只能表示投射树，但 Cantonese-HK 中有 118/1,004（11.75%）棵非投射目标树；对如此小的数据集直接删除并不是无成本的清洗，而会造成明显的信息损失和选择偏差。本实验因此加入 Nivre (2009) 的 `SWAP` transition：它把 second-top stack item 移回 buffer，并用 gold tree 的 projective order 构造确定性 oracle。被 SWAP 后重新 SHIFT 的 token 复用已有 Word-RNN representation，不会被翻译器重复生成；只有首次 SHIFT 才触发粤语 word generation。
 
 这是**相对于 Wu et al. 基线、面向本低资源平行树库的实验创新/必要适配**，并不是声称 `SWAP` 操作本身由本项目首创。全语料单元测试确认 1,004/1,004 棵粤语树均可通过 `gold tree → actions（含 SWAP）→ reconstructed tree` 精确恢复 HEAD 与 DEPREL，因此训练、DEV 和 TEST 不再排除任何非投射 pair。理论依据见 Joakim Nivre (2009), [Non-Projective Dependency Parsing in Expected Linear Time](https://aclanthology.org/P09-1040/)。
+
+## 独立 Colab：NLLB 双头翻译与图式依存分析
+
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/ss-sebastian/zh-yue-d2d/blob/main/notebooks/nllb_joint_mt_dp_colab.ipynb)
+
+[`notebooks/nllb_joint_mt_dp_colab.ipynb`](notebooks/nllb_joint_mt_dp_colab.ipynb) 是与 Wu transition model 完全分离的新实验。源代码位于 [`experiments/nllb_joint_mt_dp/`](experiments/nllb_joint_mt_dp/)；它不导入或修改 Wu builder/notebook，也不使用普通话 dependency tree。
+
+模型从固定 revision 的 `facebook/nllb-200-distilled-600M` 初始化，在同一个 decoder 上保留语言模型翻译 head，并新增 biaffine graph dependency head。训练以 LoRA 适配普通话繁体 `zho_Hant` → 粤语繁体 `yue_Hant`，同时预测粤语 UD HEAD/DEPREL。图式解码直接对所有可能的 head–dependent 边打分并输出单根 maximum spanning arborescence，因此无需 SHIFT/REDUCE/SWAP，也可表示非投射树。
+
+由于 NLLB tokenizer 会不可逆地把部分全角标点/字母规范化，实验同时报告原始 UD reference 和 NLLB-normalized reference 的翻译指标；依存节点通过原子内部 word separator 严格对齐。唯一 checkpoint 按预先固定的 DEV joint score（normalized chrF 与 gold-token-conditioned LAS 等权平均）选择，TEST 只在选择结束后运行。NLLB 权重适用 CC BY-NC 4.0，仅按研究用途使用。
