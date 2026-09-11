@@ -144,6 +144,8 @@ test 评分被隔离在最后一个单元格，只加载已经由 dev 选定的 
 
 联合解码加入显式 `FINISH_WORDS` 动作：最后一个新粤语 token 生成后可以关闭词序列，但仍允许为非投射树继续执行 `SWAP` 和 reduce。这样训练与推理使用同一个结束决策，不再出现“训练只在整棵树归约完才监督 EOS、推理却只能在 SHIFT 时预测 EOS”的错位。最终 BLEU/chrF 使用 DEV total loss 最优 checkpoint，gold-target-conditioned UAS/LAS 使用 DEV LAS 最优 checkpoint；两者的 epoch 和选择依据均写入结果包。
 
+正式训练上限为 30 epochs，并以 DEV total loss 连续 5 epochs 无改善作为 early stopping；暂不加入 beam search 或长度惩罚。句末语气词仍是普通目标 token：首次 `SHIFT` 会生成例如“喎／㗎／啦”，随后模型才通过 `FINISH_WORDS` 关闭新词流。
+
 ### 低资源非投射扩展：保留全部 gold pairs
 
 标准 Wu-style arc-standard 只能表示投射树，但 Cantonese-HK 中有 118/1,004（11.75%）棵非投射目标树；对如此小的数据集直接删除并不是无成本的清洗，而会造成明显的信息损失和选择偏差。本实验因此加入 Nivre (2009) 的 `SWAP` transition：它把 second-top stack item 移回 buffer，并用 gold tree 的 projective order 构造确定性 oracle。被 SWAP 后重新 SHIFT 的 token 复用已有 Word-RNN representation，不会被翻译器重复生成；只有首次 SHIFT 才触发粤语 word generation。

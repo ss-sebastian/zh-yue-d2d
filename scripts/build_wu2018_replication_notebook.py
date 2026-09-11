@@ -91,8 +91,8 @@ REL_EMB_DIM = 48
 DROPOUT = 0.20
 BATCH_SIZE = 16                 # gradient-accumulation batch (sentences vary in size)
 LEARNING_RATE = 8e-4
-MAX_EPOCHS = 15
-PATIENCE = 3
+MAX_EPOCHS = 30
+PATIENCE = 5
 GRAD_CLIP = 5.0
 LAMBDA_ACTION = 1.0
 RUN_ABLATIONS = True
@@ -700,7 +700,7 @@ def text_metrics(free,pairs):
 md("""
 ## 9. Training, DEV-only early stopping, and checkpoints
 
-The joint loss is `L_word + λ_action L_action`. Each reported sentence loss is normalized over its word/action decisions; gradients accumulate across `BATCH_SIZE` sentences, are clipped, and then updated. DEV total loss controls early stopping and selects the checkpoint used for free translation (BLEU/chrF). A separate checkpoint selected by DEV gold-target-conditioned LAS is used for gold-conditioned syntax (UAS/LAS). TEST remains untouched until both selections finish.
+The joint loss is `L_word + λ_action L_action`. Each reported sentence loss is normalized over its word/action decisions; gradients accumulate across `BATCH_SIZE` sentences, are clipped, and then updated. Training runs for at most 30 epochs and stops after 5 consecutive epochs without a meaningful DEV-total-loss improvement. DEV total loss selects the checkpoint used for free translation (BLEU/chrF). A separate checkpoint selected by DEV gold-target-conditioned LAS is used for gold-conditioned syntax (UAS/LAS). TEST remains untouched until both selections finish.
 """),
 code(r"""
 def mean_losses(model,items):
