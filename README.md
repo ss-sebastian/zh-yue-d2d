@@ -128,6 +128,10 @@ test 评分被隔离在最后一个单元格，只加载已经由 dev 选定的 
 
 ## Colab：全量微调对照与 LoRA dev 比较
 
+[![Open Full Fine-Tuning Replication in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/ss-sebastian/zh-yue-d2d/blob/main/notebooks/yue_full_finetune_test_replicate.ipynb)
+
+`notebooks/yue_full_finetune_test_replicate.ipynb` 是明确标注为 **Full Fine-Tuning** 的自包含复现实验。选择 GPU runtime 后可直接 Run all，不需要上传旧结果文件。它固定与 LoRA 实验相同的 UD Cantonese-HK r2.18 原始文件、自定义 803/101/100 划分、冻结 predicted POS/lemma 缓存、普通话 Stanza checkpoint、ELECTRA revision 和 dev checkpoint 选择规则；完整更新 Transformer 与 parsing layers，只在 dev 完成选择后评估一次同一 100 句 test。运行结束自动导出结果包及包含 full-FT checkpoint 的完整归档。
+
 `notebooks/yue_full_finetune_vs_lora.ipynb` 从同一个原始普通话 Stanza ELECTRA-large dependency checkpoint 和固定 Hugging Face revision `d017e219578df8e4885484edbc8969dbdea9cbe0` 重新初始化。它只扩展 checkpoint 缺少的粤语 DEPREL 单元并逐张量验证旧 parsing 权重未变，然后更新完整 Transformer 与 parsing 层。POS/lemma processor 冻结，train/dev、predicted POS/lemma 缓存、seed、parser/Transformer 学习率、步数、early stopping 和 dev CoNLL-2018 LAS 选择规则均与 LoRA 运行匹配。
 
 运行中需上传已经产生的 `yue_dev_diagnostics.zip`；notebook 会校验整个 zip 以及 LoRA dev prediction 的 SHA-256，只复用其中的 dev 预测，不会重新训练 LoRA。输出包含总体、距离和 relation 的 LoRA/full 对比，逐词 fixed/regressed 表，以及确定性抽取的 36 句人工核查材料。该 notebook 不计算 test；单次 matched-schedule、单 seed 结果只能判断这套日程下全量微调是否优于 LoRA，不能单独证明 LoRA 存在一般性的容量限制。建议使用 Colab A100，因为完整 ELECTRA-large 参数、梯度、优化器状态和最终 checkpoint 的资源需求远高于 LoRA。
