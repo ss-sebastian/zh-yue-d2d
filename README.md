@@ -148,7 +148,7 @@ test 评分被隔离在最后一个单元格，只加载已经由 dev 选定的 
 
 `notebooks/yue_lora_vs_fullft_data_scaling.ipynb` 可在 A100 runtime 中直接 Run all。它从同一普通话 checkpoint 分别运行 LoRA `r=8` 和 Full FT，并比较固定、嵌套的约 10%/25%/50%/100% 粤语训练子集（实际为 80/201/402/803 句）。子集以完整重复文本 group 为单位，并在四个官方来源间确定性平衡；dev 和 test 始终固定为相同的 101/100 句及相同哈希。训练按 epoch 对齐，所有条件使用相同 frozen predicted POS/lemma、学习率、dev CoNLL-2018 LAS 选择规则和 seed。
 
-为应对 Colab runtime 中断，每次 dev evaluation（5 epochs）后都会把模型、优化器、scheduler、随机数状态和进度原子化写入 Google Drive。重连后再次 Run all 会跳过已完成条件，并从中断条件最近的完整 evaluation 恢复。Full FT 恢复文件较大，因此会增加 Drive I/O；条件完成并安全写出 dev/test 预测与结果后，临时恢复 checkpoint 会自动删除。该 notebook 默认只有一个 seed，因此小差异仍需多 seed 验证；固定 test 先前已参与普通话模型族选择，不能称为 untouched test。
+该 notebook **不连接 Google Drive**。每次 dev evaluation（5 epochs）后都会把模型、优化器、scheduler、随机数状态和进度原子化写入当前 Colab runtime 的 `/content`；浏览器断线但 runtime 仍存活时，重连并再次 Run all 可跳过已完成条件并从最近 evaluation 恢复。每完成一个条件还会自动下载不含大型 checkpoint 的结果 ZIP。若 Google 彻底销毁 runtime，在不使用任何外部持久存储的前提下，`/content` 恢复点必然消失，中断条件只能重跑；这是 Colab 平台限制，不能由 notebook 内的 keep-alive 可靠消除。该 notebook 默认只有一个 seed，因此小差异仍需多 seed 验证；固定 test 先前已参与普通话模型族选择，不能称为 untouched test。
 
 ## 普通话—粤语 dependency distribution（纯数据诊断）
 

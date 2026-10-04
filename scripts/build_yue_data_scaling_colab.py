@@ -142,10 +142,8 @@ assert cache_hashes==EXPECTED_CACHE_SHA256,(cache_hashes,EXPECTED_CACHE_SHA256)
 print('Frozen POS/lemma caches match the original experiments: OK')
 '''
 
-drive_and_subsets = r'''# Persist every completed condition to Drive so Colab interruption is recoverable.
-from google.colab import drive
-drive.mount('/content/drive')
-PERSIST=Path('/content/drive/MyDrive/yue_lora_fullft_data_scaling')
+drive_and_subsets = r'''# No Google Drive connection is required.  Runtime-local recovery state lives under /content.
+PERSIST=WORK/'scaling_state'
 PERSIST.mkdir(parents=True,exist_ok=True)
 
 train_positions=SPLIT_POSITIONS['train']
@@ -168,12 +166,14 @@ for subset_id,meta in SUBSETS.items():
     print(subset_id,meta['sentence_count'],meta['source_distribution'],meta['gold_sha256'])
 
 (PERSIST/'subset_manifest.json').write_text(json.dumps(SUBSETS,ensure_ascii=False,indent=2),encoding='utf-8')
+print('Runtime-local recovery directory:',PERSIST)
 '''
 
 training = r'''# Run the predeclared 4 x 2 factorial experiment.
 # Completed conditions are skipped.  An interrupted condition resumes from its latest DEV evaluation.
 import time
 import shutil
+from google.colab import files
 from peft import get_peft_model_state_dict
 from stanza.models.common.bert_embedding import load_bert
 from stanza.models.common.peft_config import build_peft_wrapper
@@ -478,6 +478,21 @@ def run_condition(subset_id,method):
     atomic_json(completed,result)
     print(json.dumps(result,ensure_ascii=False,indent=2))
 
+    # Download a compact durable bundle after every completed condition.  This excludes
+    # the multi-GB recovery checkpoint but preserves all scores, history, and predictions
+    # if Colab later destroys the runtime.
+    condition_export=WORK/f'{subset_id}_{method}_completed'
+    if condition_export.exists(): shutil.rmtree(condition_export)
+    condition_export.mkdir()
+    for name in ('result.json','history.json','dev.best.pred.conllu','test.best.pred.conllu'):
+        shutil.copy2(persistent/name,condition_export/name)
+    shutil.copy2(PERSIST/'subset_manifest.json',condition_export/'subset_manifest.json')
+    condition_archive=shutil.make_archive(str(WORK/f'{subset_id}_{method}_completed'),'zip',root_dir=condition_export)
+    try:
+        files.download(condition_archive)
+    except Exception as download_error:
+        print('WARNING: automatic condition download could not start:',repr(download_error))
+
     del best_trainer,dev_loader,test_loader,dev_doc,test_doc
     gc.collect(); torch.cuda.empty_cache()
     for path in condition_dir.glob('*'):
@@ -560,7 +575,9 @@ The custom 101-sentence dev and 100-sentence test sets remain exactly fixed. Dup
 
 Training is controlled by epochs rather than a fixed number of steps: 120 maximum epochs, evaluation every 5 epochs, and early stopping after 40 epochs without DEV LAS improvement. This prevents smaller subsets from receiving many more passes over their data. DEV selects each checkpoint; the predeclared fixed TEST is evaluated once afterward for every condition.
 
-The notebook mounts Google Drive and writes a recovery checkpoint after every DEV evaluation (every 5 epochs), including model, optimizer, scheduler, RNG states, and progress. If Colab disconnects, reconnect and Run all again: verified completed conditions are skipped, and the interrupted condition resumes from its latest completed evaluation. Full-FT recovery files are large and make training somewhat slower, but they prevent a long condition from being lost. Recovery checkpoints are deleted after that condition's DEV and TEST predictions and result record are safely written.
+No Google Drive connection is used. The notebook writes a runtime-local recovery checkpoint after every DEV evaluation (every 5 epochs), including model, optimizer, scheduler, RNG states, and progress. If the browser disconnects while the Colab runtime remains alive, reconnecting to that same runtime and running again skips completed conditions and resumes the interrupted condition. After every completed condition it automatically downloads a compact ZIP containing scores, history, and DEV/TEST predictions; large recovery checkpoints are excluded and are deleted after completion.
+
+An unavoidable Colab limitation remains: if Google destroys the runtime itself, `/content` and its recovery checkpoints disappear. Without any external storage account, no notebook can resume model training after that event. The per-condition downloads ensure that already completed results survive, but the interrupted condition must restart in a new runtime.
 
 Important limitation: this custom test was previously used to select the Mandarin model family, so it is fixed and comparable but not untouched. The default experiment uses one seed; small method differences require later multi-seed confirmation.
 """
