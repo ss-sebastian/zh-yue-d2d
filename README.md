@@ -126,6 +126,12 @@ test 评分被隔离在最后一个单元格，只加载已经由 dev 选定的 
 
 `notebooks/yue_dev_diagnostics_only.ipynb` 是可直接 **Run all** 的独立诊断 notebook。它要求上传已有的 `yue_lora_electra_r8_results.zip`，只从归档提取 dev-best checkpoint；不读取自定义 train、不建立训练循环、不调用参数更新，也不评估 test。它只重建 dev，核对冻结 predicted-POS/lemma 缓存 SHA 后，分别在 predicted POS 与 gold POS/morph（lemma 仍为同一预测值）条件下进行推理，导出 POS 错误关联、依存距离、relation 混淆、最差句子和标注一致性人工核查候选。
 
+## Colab：LoRA rank sweep（仅 dev）
+
+[![Open LoRA Rank Sweep in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/ss-sebastian/zh-yue-d2d/blob/main/notebooks/yue_lora_rank_sweep_dev_only.ipynb)
+
+`notebooks/yue_lora_rank_sweep_dev_only.ipynb` 可直接 Run all，无需上传文件。它从同一普通话 checkpoint 独立运行 `r=4/8/16/32`，并用 `alpha=2r` 固定 `alpha/r=2`；其余数据、冻结 predicted POS/lemma、学习率、训练日程和 dev checkpoint 选择规则均与原 r=8 实验一致。该 notebook 完全不读取或评估 test，只按 dev CoNLL-2018 LAS 比较和选择 rank，并自动下载比较表、曲线、各 rank history 与 dev-selected checkpoint。单 seed 结果只用于检查 rank sensitivity；小差异需要多 seed 才能判断是否稳定。
+
 ## Colab：全量微调对照与 LoRA dev 比较
 
 [![Open Full Fine-Tuning Replication in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/ss-sebastian/zh-yue-d2d/blob/main/notebooks/yue_full_finetune_test_replicate.ipynb)
