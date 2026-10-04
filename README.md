@@ -142,6 +142,14 @@ test 评分被隔离在最后一个单元格，只加载已经由 dev 选定的 
 
 运行中需上传已经产生的 `yue_dev_diagnostics.zip`；notebook 会校验整个 zip 以及 LoRA dev prediction 的 SHA-256，只复用其中的 dev 预测，不会重新训练 LoRA。输出包含总体、距离和 relation 的 LoRA/full 对比，逐词 fixed/regressed 表，以及确定性抽取的 36 句人工核查材料。该 notebook 不计算 test；单次 matched-schedule、单 seed 结果只能判断这套日程下全量微调是否优于 LoRA，不能单独证明 LoRA 存在一般性的容量限制。建议使用 Colab A100，因为完整 ELECTRA-large 参数、梯度、优化器状态和最终 checkpoint 的资源需求远高于 LoRA。
 
+## Colab：LoRA vs Full FT 数据规模曲线
+
+[![Open LoRA vs Full FT Data Scaling in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/ss-sebastian/zh-yue-d2d/blob/main/notebooks/yue_lora_vs_fullft_data_scaling.ipynb)
+
+`notebooks/yue_lora_vs_fullft_data_scaling.ipynb` 可在 A100 runtime 中直接 Run all。它从同一普通话 checkpoint 分别运行 LoRA `r=8` 和 Full FT，并比较固定、嵌套的约 10%/25%/50%/100% 粤语训练子集（实际为 80/201/402/803 句）。子集以完整重复文本 group 为单位，并在四个官方来源间确定性平衡；dev 和 test 始终固定为相同的 101/100 句及相同哈希。训练按 epoch 对齐，所有条件使用相同 frozen predicted POS/lemma、学习率、dev CoNLL-2018 LAS 选择规则和 seed。
+
+为应对 Colab runtime 中断，每次 dev evaluation（5 epochs）后都会把模型、优化器、scheduler、随机数状态和进度原子化写入 Google Drive。重连后再次 Run all 会跳过已完成条件，并从中断条件最近的完整 evaluation 恢复。Full FT 恢复文件较大，因此会增加 Drive I/O；条件完成并安全写出 dev/test 预测与结果后，临时恢复 checkpoint 会自动删除。该 notebook 默认只有一个 seed，因此小差异仍需多 seed 验证；固定 test 先前已参与普通话模型族选择，不能称为 untouched test。
+
 ## 普通话—粤语 dependency distribution（纯数据诊断）
 
 `scripts/analyze_parallel_dependency_distributions.py` 不加载或修改模型。主分析只使用自定义粤语 train 的 803 句及其通过官方唯一 `parallel_id` 验证的 Chinese-HK 平行译文；dev/test 仅出现在明确标记为 descriptive 的全语料附录中，不用于选择模型设置。输出位于 `analysis/dependency_distribution_r2.18/`，包括 strict/base DEPREL、HEAD 方向、依存距离、条件 attachment signature 和逐平行句结构差异。需注意 Chinese-HK 并不是普通话 ELECTRA checkpoint 训练语料的替代证据，因此该分析描述的是两个平行 treebank 的 gold 标注分布，而非 checkpoint 内部表示。
