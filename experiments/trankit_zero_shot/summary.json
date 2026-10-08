@@ -1,0 +1,61 @@
+{
+  "experiment": "off-the-shelf Trankit zero-shot Cantonese-HK dependency parsing",
+  "condition": {
+    "gold_sentence_boundaries": true,
+    "gold_tokenization": true,
+    "predicted_pos_morphology": true,
+    "cantonese_finetuning": false
+  },
+  "selection": "Compare Chinese packages on dev CoNLL-2018 LAS; test selected package once",
+  "selected_package": "chinese",
+  "dev_results": {
+    "chinese": {
+      "sentences": 101,
+      "tokens": 1557,
+      "UPOS_percent": 81.18175979447656,
+      "UAS_percent": 57.28965960179833,
+      "CoNLL18_LAS_percent": 40.655105973025044,
+      "strict_LAS_percent": 34.168272318561336,
+      "strict_LAS_no_punct_percent": 32.61562998405104,
+      "prediction_sha256": "2b3fbfa7d98232f0aecef254afc651bb1782b4b3b79f241ca53a4916c31b8676"
+    },
+    "traditional-chinese": {
+      "sentences": 101,
+      "tokens": 1557,
+      "UPOS_percent": 81.56711624919717,
+      "UAS_percent": 55.42710340398202,
+      "CoNLL18_LAS_percent": 38.47141939627489,
+      "strict_LAS_percent": 32.947976878612714,
+      "strict_LAS_no_punct_percent": 31.259968102073366,
+      "prediction_sha256": "b3b3b8b519961d35956e83aa2601f794be0a8ca5f4f791ee938653b2f0a67e45"
+    }
+  },
+  "test_result": {
+    "sentences": 100,
+    "tokens": 1360,
+    "UPOS_percent": 82.5,
+    "UAS_percent": 57.5735294117647,
+    "CoNLL18_LAS_percent": 40.955882352941174,
+    "strict_LAS_percent": 34.63235294117647,
+    "strict_LAS_no_punct_percent": 32.036199095022624,
+    "prediction_sha256": "ab5a7bfcf257fa12387aa15dc1c2529d64f9f81d44059c44b6c3611e7faa752f"
+  },
+  "software": {
+    "trankit_version": "1.1.2",
+    "trankit_commit": "54e863327391262cf72f6adc1b0ff104e972a1dc",
+    "embedding": "xlm-roberta-large",
+    "transformers": "4.51.3",
+    "adapters": "1.2.0",
+    "torch": "2.11.0+cu130",
+    "gpu": "Tesla T4"
+  },
+  "data": {
+    "project_commit": "cd6359d4967b27d7a65d4da4182ae2141d26bacc",
+    "split_sha256": {
+      "dev": "41bc28d903457e70a4747307e56b3eb7820f2e6d3ede10ab549fd4a85aef63b7",
+      "test": "1d7b19ac4c0a75d58a80482413ff9cac63ed18917262c18fa1f92fc0f871c0a0"
+    }
+  },
+  "colab_archive_sha256": "879f850b1f382330b30af36792a6ee50d1f1f7fa0d4d146afcfd3be9b34eb027",
+  "test_selection_caveat": "This project test was previously used for model-family comparison and is not untouched."
+}
